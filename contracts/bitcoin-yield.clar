@@ -43,3 +43,16 @@
     {protocol-id: uint} 
     {total-deposit: uint}
 )
+
+;; Contract Owner
+(define-constant CONTRACT-OWNER tx-sender)
+
+;; Constants
+(define-constant MAX-PROTOCOLS u5)
+(define-constant MAX-ALLOCATION-PERCENTAGE u100)
+(define-constant BASE-DENOMINATION u1000000)
+
+;; Authorization Check
+(define-private (is-contract-owner (sender principal))
+    (is-eq sender CONTRACT-OWNER)
+)
