@@ -183,3 +183,34 @@
         (ok (+ amount yield))
     )
 )
+
+;; Risk Management: Protocol Deactivation
+(define-public (deactivate-protocol (protocol-id uint))
+    (begin
+        (asserts! (is-contract-owner tx-sender) ERR-UNAUTHORIZED)
+        (map-set supported-protocols 
+            {protocol-id: protocol-id} 
+            (merge 
+                (unwrap! 
+                    (map-get? supported-protocols {protocol-id: protocol-id}) 
+                    ERR-INVALID-PROTOCOL
+                )
+                {active: false}
+            )
+        )
+        (var-set total-protocols (- (var-get total-protocols) u1))
+        (ok true)
+    )
+)
+
+;; Initialization with Error Checking
+(define-public (initialize-protocols)
+    (begin
+        (try! (add-protocol u1 "Stacks Core Protocol" u500 u20))
+        (try! (add-protocol u2 "Bitcoin Yield Plus" u750 u30))
+        (ok true)
+    )
+)
+
+;; Contract Initialization
+(try! (initialize-protocols))
