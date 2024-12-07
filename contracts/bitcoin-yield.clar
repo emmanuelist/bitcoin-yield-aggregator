@@ -56,3 +56,27 @@
 (define-private (is-contract-owner (sender principal))
     (is-eq sender CONTRACT-OWNER)
 )
+
+;; Protocol Management
+(define-public (add-protocol 
+    (protocol-id uint) 
+    (name (string-ascii 50)) 
+    (base-apy uint) 
+    (max-allocation-percentage uint)
+)
+    (begin 
+        (asserts! (is-contract-owner tx-sender) ERR-UNAUTHORIZED)
+        (asserts! (< (var-get total-protocols) MAX-PROTOCOLS) ERR-PROTOCOL-LIMIT-REACHED)
+        (map-set supported-protocols 
+            {protocol-id: protocol-id} 
+            {
+                name: name,
+                base-apy: base-apy,
+                max-allocation-percentage: max-allocation-percentage,
+                active: true
+            }
+        )
+        (var-set total-protocols (+ (var-get total-protocols) u1))
+        (ok true)
+    )
+)
