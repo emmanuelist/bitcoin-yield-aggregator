@@ -14,3 +14,32 @@
 (define-constant ERR-WITHDRAWAL-FAILED (err u4))
 (define-constant ERR-DEPOSIT-FAILED (err u5))
 (define-constant ERR-PROTOCOL-LIMIT-REACHED (err u6))
+
+;; Storage: Protocols
+(define-map supported-protocols 
+    {protocol-id: uint} 
+    {
+        name: (string-ascii 50),
+        base-apy: uint,
+        max-allocation-percentage: uint,
+        active: bool
+    }
+)
+
+;; Storage: Protocol Counter
+(define-data-var total-protocols uint u0)
+
+;; Storage: User Deposits
+(define-map user-deposits 
+    {user: principal, protocol-id: uint} 
+    {
+        amount: uint,
+        deposit-time: uint
+    }
+)
+
+;; Storage: Protocol Total Deposits
+(define-map protocol-total-deposits 
+    {protocol-id: uint} 
+    {total-deposit: uint}
+)
